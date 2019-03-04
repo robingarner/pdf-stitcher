@@ -33,11 +33,6 @@ public class JSONParserTest {
 
   @Test(dataProvider="inputs")
   public void parse(String input, List<InputFile> expected) throws Exception {
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    JsonFactory factory = new JsonFactory();
-//    factory.setCodec(objectMapper);
-//    factory.createGenerator(System.out).writeObject(expected);
-//
     ProjectFile p = new JSONParser(new ByteArrayInputStream(input.getBytes())).parse();
     Assert.assertEquals(p.getInputs(), expected);
   }
