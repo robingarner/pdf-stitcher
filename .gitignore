@@ -1,0 +1,6 @@
+.classpath
+.project
+pdfbox/
+reports/
+target/
+test-output/
