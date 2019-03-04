@@ -10,8 +10,6 @@ import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 
-import robingarner.pdfstitcher.InputFile.PageAlign;
-
 /**
  * Container for the mutable state required to stitch together the
  * input documentation.
@@ -44,7 +42,9 @@ public class Stitcher implements Closeable {
   public Stitcher concatenate() throws IOException {
     ProjectFile project = getParser().parse();
     for (InputFile inputFile : project.getInputs()) {
-      append(project, inputFile);
+      if (inputFile.isIncluded()) {
+        append(project, inputFile);
+      }
     }
     return this;
   }

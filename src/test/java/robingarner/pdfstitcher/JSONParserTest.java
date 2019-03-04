@@ -11,23 +11,30 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import robingarner.pdfstitcher.InputFile.PageAlign;
-
 public class JSONParserTest {
 
   @DataProvider
   Object[][] inputs() {
     return new Object[][] {
       { "{ }" , emptyList() },
-      { "{ \"inputs\" : [ { \"file\" : \"input.txt\", \"align\" : \"AUTO\" } ] }",
-        asList(new InputFile(new File("input.txt"), PageAlign.AUTO))},
+      // Test the defaults for all optional values
       { "{ \"inputs\" : [ { \"file\" : \"input.txt\" } ] }",
-          asList(new InputFile(new File("input.txt"), PageAlign.AUTO))},
+        asList(new InputFile(new File("input.txt"))
+            .align(PageAlign.AUTO)
+            .range(PageRange.ALL)
+            .include(true))},
+
+      { "{ \"inputs\" : [ { \"file\" : \"input.txt\", \"align\" : \"ODD\" } ] }",
+        asList(new InputFile(new File("input.txt")).align(PageAlign.ODD))},
+      { "{ \"inputs\" : [ { \"file\" : \"input.txt\" } ] }",
+          asList(new InputFile(new File("input.txt")).align(PageAlign.AUTO))},
       { "{ \"baseDir\" : \"/tmp\","
           + "\"inputs\" : [ { \"file\" : \"input.txt\" } ] }",
-            asList(new InputFile(new File("input.txt"), PageAlign.AUTO))},
+            asList(new InputFile(new File("input.txt")))},
       { "{ \"inputs\" : [ { \"file\" : \"input.txt\", \"range\" : \"1-3\" } ] }",
-            asList(new InputFile(new File("input.txt"), PageAlign.AUTO).setRange(new PageRange(1,3)))},
+            asList(new InputFile(new File("input.txt")).range(new PageRange(1,3)))},
+      { "{ \"inputs\" : [ { \"file\" : \"input.txt\", \"include\" : \" false\" } ] }",
+              asList(new InputFile(new File("input.txt")).include(false))},
     };
   }
 

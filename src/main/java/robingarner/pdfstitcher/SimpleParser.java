@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import robingarner.pdfstitcher.InputFile.PageAlign;
-
 public class SimpleParser implements ProjectFileParser {
 
   private final ProjectFile project = new ProjectFile();

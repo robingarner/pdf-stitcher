@@ -1,7 +1,9 @@
 package robingarner.pdfstitcher;
 
 import java.io.File;
-import java.util.function.BiPredicate;
+
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Representation of an input file, parsed from the project file.
@@ -10,40 +12,18 @@ import java.util.function.BiPredicate;
  */
 public class InputFile {
 
-  /**
-   * Various alignment options that can be applied to an input file.
-   */
-  public enum PageAlign {
-    ODD((n, p) -> !isOdd(n)),
-    EVEN((n, p) -> isOdd(n)),
-    AUTO((n, p) -> !isOdd(p) ? isOdd(n) : false),
-    NONE((n, p) -> false);
-
-    private PageAlign(BiPredicate<Integer, Integer> pred) {
-      this.pred = pred;
-    }
-
-    private final BiPredicate<Integer, Integer> pred;
-
-    /**
-     * Do we need to insert an alignment page, given that the next page in
-     * the output is 'current' and the document to be merged is 'pages' pages long ?
-     * @param current Current page number
-     * @param length Document length (in pages)
-     * @return {@code true} if an alignment page is required.
-     */
-    public boolean isRequired(int current, int length) {
-      return pred.test(current, length);
-    }
-  };
-
   /** The input file itself. */
   private File file;
 
   /** The alignment requirements for this file */
   private PageAlign align = PageAlign.AUTO;
 
-  private PageRange range = new PageRange("1-");
+  /** Range of pages from the source */
+  private PageRange range = PageRange.ALL;
+
+  /** Include or exclude this file altogether. */
+  @JsonProperty("include")
+  private boolean include = true;
 
   public InputFile() {
 
@@ -54,6 +34,17 @@ public class InputFile {
    * @param file The input file
    * @param align Alignment requirements
    */
+  public InputFile(File file) {
+    this.file = file;
+  }
+
+  /**
+   * Public constructor.
+   * @param file The input file
+   * @param align Alignment requirements
+   * @deprecated Use the one-arg constructor and the fluent setter
+   */
+  @Deprecated
   public InputFile(File file, PageAlign align) {
     this.file = file;
     this.align = align;
@@ -71,6 +62,11 @@ public class InputFile {
     return align;
   }
 
+  public InputFile align(PageAlign align) {
+    this.align = align;
+    return this;
+  }
+
   /**
    * @param n The number to test
    * @return {@code true} if n is odd
@@ -83,8 +79,17 @@ public class InputFile {
     return range;
   }
 
-  public InputFile setRange(PageRange range) {
+  public InputFile range(PageRange range) {
     this.range = range;
+    return this;
+  }
+
+  public boolean isIncluded() {
+    return include;
+  }
+
+  public InputFile include(boolean include) {
+    this.include = include;
     return this;
   }
 
@@ -94,6 +99,8 @@ public class InputFile {
     int result = 1;
     result = prime * result + ((align == null) ? 0 : align.hashCode());
     result = prime * result + ((file == null) ? 0 : file.hashCode());
+    result = prime * result + (include ? 1231 : 1237);
+    result = prime * result + ((range == null) ? 0 : range.hashCode());
     return result;
   }
 
@@ -112,6 +119,13 @@ public class InputFile {
       if (other.file != null)
         return false;
     } else if (!file.equals(other.file))
+      return false;
+    if (include != other.include)
+      return false;
+    if (range == null) {
+      if (other.range != null)
+        return false;
+    } else if (!range.equals(other.range))
       return false;
     return true;
   }

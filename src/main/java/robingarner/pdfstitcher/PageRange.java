@@ -4,12 +4,16 @@ import java.util.function.Predicate;
 
 public class PageRange implements Predicate<Integer>{
 
+  public static final PageRange ALL = new PageRange();
+
   int low = 1;
 
   int high = Integer.MAX_VALUE;
 
+  public PageRange() {
+  }
+
   public PageRange(int low, int high) {
-    super();
     this.low = low;
     this.high = high;
   }
@@ -65,4 +69,31 @@ public class PageRange implements Predicate<Integer>{
     }
     return result >= 0 ? result : 0;
   }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + high;
+    result = prime * result + low;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    PageRange other = (PageRange) obj;
+    if (high != other.high)
+      return false;
+    if (low != other.low)
+      return false;
+    return true;
+  }
+
+
 }
