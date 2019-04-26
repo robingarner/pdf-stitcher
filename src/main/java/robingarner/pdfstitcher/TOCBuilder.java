@@ -36,7 +36,6 @@ public class TOCBuilder {
     PDFont font = PDType1Font.HELVETICA;
     final float entryIndent = 2 * ENTRY_FONT_SIZE;
     int tocLines = project.getVisibleInputs().size() + 2;
-    System.err.printf("tocLines=%d%n",tocLines);
 
     float stringWidth = font.getStringWidth( TITLE );
     float xPos = (pageSize.getWidth() - stringWidth/1000f*TITLE_FONT_SIZE)/2f;
@@ -52,7 +51,6 @@ public class TOCBuilder {
       yPos -= 2 * TITLE_FONT_SIZE;
       xPos += entryIndent;
       int i = 1;
-      System.err.printf("tocEntries=%d%n", tocEntries().size());
       contentStream.setFont( font, ENTRY_FONT_SIZE );
       for (String entry : tocEntries()) {
         contentStream.beginText();
