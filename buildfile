@@ -1,5 +1,5 @@
 # Version number for this release
-VERSION_NUMBER = "1"
+VERSION_NUMBER = "2"
 # Group identifier for your projects
 GROUP = "robingarner.pdfstitcher"
 COPYRIGHT = "Robin Garner"
