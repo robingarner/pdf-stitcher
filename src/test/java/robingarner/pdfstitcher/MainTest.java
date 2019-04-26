@@ -29,9 +29,11 @@ public class MainTest {
   @DataProvider
   public Object[][] tests() {
     return new Object[][] {
-      new Object[] { "src/test/resources/test1/partfile" },
-      new Object[] { "src/test/resources/test3/partfile" },
-      new Object[] { "src/test/resources/test4/partfile" },
+      new Object[] { "src/test/resources/test1/partfile.json" },
+      new Object[] { "src/test/resources/test3/partfile.json" },
+      new Object[] { "src/test/resources/test4/partfile.json" },
+      new Object[] { "src/test/resources/testTOC1/partfile.json" },
+      { "src/test/resources/testTOC2/partfile.json" },
     };
   }
 
@@ -43,7 +45,7 @@ public class MainTest {
   @DataProvider
   public Object[][] badTests() {
     return new Object[][] {
-      new Object[] { "src/test/resources/test2/partfile" },
+      new Object[] { "src/test/resources/test2/partfile.json" },
     };
   }
 

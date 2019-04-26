@@ -1,0 +1,5 @@
+{ "inputs" : [ 
+  { "file" : "confitemini-domino-stb.pdf", "align" : "EVEN" } ,
+  { "file" : "Palestrina-Sicut_Cervus_Desiderat.pdf", "align" : "ODD" }
+  ] }
+

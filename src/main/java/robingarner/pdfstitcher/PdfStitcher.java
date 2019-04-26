@@ -16,7 +16,7 @@ public class PdfStitcher implements Runnable {
   @Override
   public void run() {
     try (Stitcher stitcher = new Stitcher(cmdline)) {
-      stitcher.concatenate().save();
+      stitcher.build().save();
     } catch (IOException e) {
       throw new RuntimeException(e);
     }

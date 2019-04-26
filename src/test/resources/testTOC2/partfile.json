@@ -1,0 +1,10 @@
+{ "toc" : "true",
+  "inputs" : [ 
+  { "file" : "confitemini-domino-stb.pdf", 
+    "toc" : "Confitemini Domino",
+    "align" : "EVEN" } ,
+  { "file" : "Palestrina-Sicut_Cervus_Desiderat.pdf",
+       "toc" : "Sicut Cervus",
+  "align" : "ODD" }
+  ] }
+

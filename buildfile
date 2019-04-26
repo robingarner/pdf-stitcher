@@ -19,7 +19,7 @@ httpcore_version = "4.4.4"
 httpmime_version = "4.5.1"
 hib_ver = "5.1.0.Final"
 
-v_pdfbox = "2.0.4"
+v_pdfbox = "2.0.15"
 
 PDFBOX = transitive("org.apache.pdfbox:pdfbox::#{v_pdfbox}")
 
@@ -54,7 +54,7 @@ JACKSON_ANN = artifact("com.fasterxml.jackson.core:jackson-annotations:jar:#{jac
 
 JACKSON = [ JACKSON_CORE, JACKSON_DATABIND, JACKSON_ANN ]
 
-GUICE = transitive('com.google.inject:guice:jar:4.2.0')
+GUICE = transitive('com.google.inject:guice:jar:4.2.2')
 
 ONE_JAR = artifact('scu.one-jar:one-jar:jar:0.98-scu.2')
 

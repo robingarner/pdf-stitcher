@@ -39,8 +39,11 @@ public class Stitcher implements Closeable {
     this.cmdline = cmdline;
   }
 
-  public Stitcher concatenate() throws IOException {
+  public Stitcher build() throws IOException {
     ProjectFile project = getParser().parse();
+    if (project.getToc()) {
+      appendPage(new TOCBuilder(project, outDoc).getTOCPage());
+    }
     for (InputFile inputFile : project.getInputs()) {
       if (inputFile.isIncluded()) {
         append(project, inputFile);
@@ -54,7 +57,12 @@ public class Stitcher implements Closeable {
     if (projectFile.getName().toLowerCase().endsWith(".json")) {
       return new JSONParser(projectFile);
     }
-    return new SimpleParser(projectFile);
+    throw new Error("Don't know how to parse "+projectFile.getName());
+  }
+
+  void appendPage(PDPage page) {
+    outDoc.addPage(page);
+    pageNo++;
   }
 
   void append(ProjectFile project, InputFile inputFile) throws IOException {
@@ -75,8 +83,7 @@ public class Stitcher implements Closeable {
     int docPage = 1;
     for (PDPage page : inDoc.getPages()) {
       if (inputFile.getRange().test(docPage)) {
-        outDoc.addPage(page);
-        pageNo++;
+        appendPage(page);
       }
       docPage++;
     }
@@ -89,8 +96,7 @@ public class Stitcher implements Closeable {
   void addAlignmentPages(PageAlign align, int nextDocLength) {
     while (align.isRequired(pageNo, nextDocLength)) {
       message("Adding blank alignment page #%d", pageNo);
-      outDoc.addPage(new PDPage());
-      pageNo++;
+      appendPage(new PDPage());
     }
   }
 

@@ -2,13 +2,12 @@ package robingarner.pdfstitcher;
 
 import java.io.File;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Representation of an input file, parsed from the project file.
  *
- * Includes Jaackson annotations so that we can parse it directly.
+ * Includes Jackson annotations so that we can parse it directly.
  */
 public class InputFile {
 
@@ -25,6 +24,9 @@ public class InputFile {
   @JsonProperty("include")
   private boolean include = true;
 
+  @JsonProperty("toc")
+  private String tocEntry = null;
+
   public InputFile() {
 
   }
@@ -32,7 +34,6 @@ public class InputFile {
   /**
    * Public constructor.
    * @param file The input file
-   * @param align Alignment requirements
    */
   public InputFile(File file) {
     this.file = file;
@@ -65,6 +66,15 @@ public class InputFile {
   public InputFile align(PageAlign align) {
     this.align = align;
     return this;
+  }
+
+  public InputFile setToc(String value) {
+    this.tocEntry = value;
+    return this;
+  }
+
+  public String getToc() {
+    return tocEntry == null ? file.getName() : tocEntry;
   }
 
   /**
@@ -126,6 +136,11 @@ public class InputFile {
       if (other.range != null)
         return false;
     } else if (!range.equals(other.range))
+      return false;
+    if (tocEntry == null) {
+      if (other.tocEntry != null)
+        return false;
+    } else if (!tocEntry.equals(other.tocEntry))
       return false;
     return true;
   }
