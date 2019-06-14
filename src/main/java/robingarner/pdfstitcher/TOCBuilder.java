@@ -18,7 +18,7 @@ public class TOCBuilder {
 
   private static final float ENTRY_FONT_SIZE = 12.0f;
 
-  private static final String TITLE = "Table Of Contents";
+  private static final String TOC = "Table Of Contents";
 
   private final ProjectFile project;
 
@@ -31,18 +31,30 @@ public class TOCBuilder {
 
   public PDPage getTOCPage() throws IOException {
     PDPage toc = new PDPage(PDRectangle.A4);
-
     PDRectangle pageSize = toc.getMediaBox();
-    PDFont font = PDType1Font.HELVETICA;
+    PDFont font = PDType1Font.TIMES_ROMAN;
     final float entryIndent = 2 * ENTRY_FONT_SIZE;
-    int tocLines = project.getVisibleInputs().size() + 2;
+    int tocLines = project.getVisibleInputs().size();
 
-    float stringWidth = font.getStringWidth( TITLE );
-    float xPos = (pageSize.getWidth() - stringWidth/1000f*TITLE_FONT_SIZE)/2f;
-    float yPos = (pageSize.getHeight() + tocLines*ENTRY_FONT_SIZE)/2f;
+    float stringWidth = font.getStringWidth( TOC );
+    float xPos = (pageSize.getWidth() - stringWidth/1000f*TITLE_FONT_SIZE)/3f;
+    final float tocPos = (pageSize.getHeight() + tocLines*ENTRY_FONT_SIZE + 2*TITLE_FONT_SIZE)/2f;
 
+    final float titlePos = tocPos + (pageSize.getHeight() - tocPos)/2;
+
+    // Width of the index (ie 1., 2. ...)
+    final float indexWidth = font.getStringWidth( "88. " )/1000f * ENTRY_FONT_SIZE;
+
+    float yPos = tocPos;
 
     try (PDPageContentStream contentStream = new PDPageContentStream(outDoc, toc);) {
+      if (project.hasTitle()) {
+        contentStream.setFont( font, TITLE_FONT_SIZE );
+        contentStream.beginText();
+        contentStream.newLineAtOffset(xPos, titlePos);
+        contentStream.showText(project.getTitle());
+        contentStream.endText();
+      }
       contentStream.setFont( font, TITLE_FONT_SIZE );
       contentStream.beginText();
       contentStream.newLineAtOffset(xPos, yPos);
@@ -55,9 +67,14 @@ public class TOCBuilder {
       for (String entry : tocEntries()) {
         contentStream.beginText();
         contentStream.newLineAtOffset(xPos, yPos);
-        contentStream.showText(String.format("%d. %s", i, entry));
+        float thisIndexWidth = font.getStringWidth( "88. " )/1000f * ENTRY_FONT_SIZE;
+        contentStream.showText(String.format("%2d.", i));
         contentStream.endText();
-        yPos -= ENTRY_FONT_SIZE * 1.3;
+        contentStream.beginText();
+        contentStream.newLineAtOffset(xPos+indexWidth, yPos);
+        contentStream.showText(String.format("%s", entry));
+        contentStream.endText();
+       yPos -= ENTRY_FONT_SIZE * 1.3;
         i++;
       }
     }

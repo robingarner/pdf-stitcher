@@ -1,0 +1,7 @@
+{ "toc" : "true",
+  "title" : "This Is The Title",
+  "inputs" : [ 
+  { "file" : "file1.pdf", "align" : "EVEN", "toc" : "First Entry" } ,
+  { "file" : "file2.pdf", "align" : "ODD", "toc" : "Second Entry" }
+  ] }
+

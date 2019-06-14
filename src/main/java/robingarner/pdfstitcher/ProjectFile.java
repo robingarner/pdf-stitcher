@@ -17,6 +17,8 @@ public class ProjectFile {
 
   private boolean toc = false;
 
+  private String title = null;
+
   public ProjectFile() {
 
   }
@@ -76,11 +78,24 @@ public class ProjectFile {
     return this;
   }
 
+  public boolean hasTitle() {
+    return title != null;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((inputs == null) ? 0 : inputs.hashCode());
+    result = prime * result + ((title == null) ? 0 : title.hashCode());
     result = prime * result + (toc ? 1231 : 1237);
     return result;
   }
@@ -100,6 +115,11 @@ public class ProjectFile {
     } else if (!inputs.equals(other.inputs))
       return false;
     if (toc != other.toc)
+      return false;
+    if (title == null) {
+      if (other.title != null)
+        return false;
+    } else if (!title.equals(other.title))
       return false;
     return true;
   }

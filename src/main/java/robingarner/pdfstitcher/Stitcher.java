@@ -40,7 +40,7 @@ public class Stitcher implements Closeable {
   }
 
   public Stitcher build() throws IOException {
-    ProjectFile project = getParser().parse();
+    ProjectFile project = ProjectFileParserFactory.parse(cmdline.getProjectFile());
     if (project.getToc()) {
       appendPage(new TOCBuilder(project, outDoc).getTOCPage());
     }
@@ -50,14 +50,6 @@ public class Stitcher implements Closeable {
       }
     }
     return this;
-  }
-
-  ProjectFileParser getParser() throws FileNotFoundException, IOException {
-    File projectFile = cmdline.getProjectFile();
-    if (projectFile.getName().toLowerCase().endsWith(".json")) {
-      return new JSONParser(projectFile);
-    }
-    throw new Error("Don't know how to parse "+projectFile.getName());
   }
 
   void appendPage(PDPage page) {
