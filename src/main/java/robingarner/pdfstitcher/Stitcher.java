@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 
 /**
  * Container for the mutable state required to stitch together the
@@ -58,6 +59,22 @@ public class Stitcher implements Closeable {
   }
 
   void append(ProjectFile project, InputFile inputFile) throws IOException {
+    if (inputFile.isSpacer()) {
+      appendSpacer(project, inputFile);
+    } else {
+      appendPdf(project, inputFile);
+    }
+  }
+
+  private void appendSpacer(ProjectFile project, InputFile inputFile) {
+    if (PageAlign.isEven(pageNo)) {
+      message("Adding alignment page for spacer at page #%d", pageNo);
+      appendBlankPage();
+    }
+  }
+
+  private void appendPdf(ProjectFile project, InputFile inputFile)
+      throws IOException, FileNotFoundException, InvalidPasswordException {
     File file = inputFile.getFile();
     if (!file.isAbsolute()) {
       file = new File(project.getBaseDir(), file.getPath()).getCanonicalFile();
@@ -88,8 +105,12 @@ public class Stitcher implements Closeable {
   void addAlignmentPages(PageAlign align, int nextDocLength) {
     while (align.isRequired(pageNo, nextDocLength)) {
       message("Adding blank alignment page #%d", pageNo);
-      appendPage(new PDPage());
+      appendBlankPage();
     }
+  }
+
+  private void appendBlankPage() {
+    appendPage(new PDPage());
   }
 
   public Stitcher save() throws IOException {

@@ -50,7 +50,10 @@ public class ProjectFile {
   }
 
   public List<InputFile> getVisibleInputs() {
-    return inputs.stream().filter(InputFile::isIncluded).collect(toList());
+    return inputs.stream()
+        .filter(InputFile::isIncluded)
+        .filter(InputFile::isNotSpacer)
+        .collect(toList());
   }
 
   public void appendInputFile(InputFile file) {

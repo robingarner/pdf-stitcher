@@ -27,6 +27,10 @@ public class InputFile {
   @JsonProperty("toc")
   private String tocEntry = null;
 
+  /** Is this a real file or just blank pages for including a spacer. */
+  @JsonProperty("spacer")
+  private boolean spacer = false;
+
   public InputFile() {
 
   }
@@ -37,18 +41,6 @@ public class InputFile {
    */
   public InputFile(File file) {
     this.file = file;
-  }
-
-  /**
-   * Public constructor.
-   * @param file The input file
-   * @param align Alignment requirements
-   * @deprecated Use the one-arg constructor and the fluent setter
-   */
-  @Deprecated
-  public InputFile(File file, PageAlign align) {
-    this.file = file;
-    this.align = align;
   }
 
   /**
@@ -63,6 +55,11 @@ public class InputFile {
     return align;
   }
 
+  /** Fluent setter for alignment
+   *
+   * @param align Alignment to use
+   * @return {@code this}
+   */
   public InputFile align(PageAlign align) {
     this.align = align;
     return this;
@@ -77,12 +74,16 @@ public class InputFile {
     return tocEntry == null ? file.getName() : tocEntry;
   }
 
-  /**
-   * @param n The number to test
-   * @return {@code true} if n is odd
-   */
-  static final boolean isOdd(int n) {
-    return (n & 1) == 1;
+  public boolean isSpacer() {
+    return spacer;
+  }
+
+  public boolean isNotSpacer() {
+    return !spacer;
+  }
+
+  public void setSpacer(boolean spacer) {
+    this.spacer = spacer;
   }
 
   public PageRange getRange() {
