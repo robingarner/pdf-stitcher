@@ -31,6 +31,8 @@ public class InputFile {
   @JsonProperty("spacer")
   private boolean spacer = false;
 
+  private int firstPage;
+
   public InputFile() {
 
   }
@@ -102,6 +104,14 @@ public class InputFile {
   public InputFile include(boolean include) {
     this.include = include;
     return this;
+  }
+
+  public int getFirstPage() {
+    return firstPage;
+  }
+
+  public void setFirstPage(int firstPage) {
+    this.firstPage = firstPage;
   }
 
   @Override

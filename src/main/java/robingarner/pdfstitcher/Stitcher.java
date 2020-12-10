@@ -11,7 +11,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.util.Matrix;
 
 /**
@@ -25,9 +24,6 @@ import org.apache.pdfbox.util.Matrix;
  *   stitcher.close();
  */
 public class Stitcher implements Closeable {
-
-  private static final float INDEX_FONT_SIZE = 8.0f;
-  private static final PDType1Font INDEX_FONT = PDType1Font.TIMES_ROMAN;
 
   private final CommandLine cmdline;
 
@@ -48,13 +44,17 @@ public class Stitcher implements Closeable {
 
   public Stitcher build() throws IOException {
     ProjectFile project = ProjectFileParserFactory.parse(cmdline.getProjectFile());
+    TOCBuilder tocBuilder = new TOCBuilder(project, outDoc);
     if (project.getToc()) {
-      appendPage(new TOCBuilder(project, outDoc).getTOCPage());
+      appendPage(tocBuilder.getTOCPage());
     }
     for (InputFile inputFile : project.getInputs()) {
       if (inputFile.isIncluded()) {
         append(project, inputFile);
       }
+    }
+    if (project.getToc()) {
+      tocBuilder.finishTOCPage();
     }
     return this;
   }
@@ -96,6 +96,7 @@ public class Stitcher implements Closeable {
     inDocs.add(inDoc);
     addAlignmentPages(inputFile.getAlign(), pages(inputFile, inDoc));
     message("Adding %s at page #%d", inputFile.getFile().getCanonicalPath(), pageNo);
+    inputFile.setFirstPage(pageNo);
 
     int docPage = 1;
     for (PDPage page : inDoc.getPages()) {
@@ -147,15 +148,14 @@ public class Stitcher implements Closeable {
    */
   private void indexMark(InputFile inputFile, PDPage page) {
     try (PDPageContentStream stream = new PDPageContentStream(outDoc, page, PDPageContentStream.AppendMode.APPEND, true, true);) {
-      float xPos = page.getMediaBox().getWidth() - INDEX_FONT_SIZE;
-      final float yPos = page.getMediaBox().getHeight()
-          - INDEX_FONT.getStringWidth(inputFile.getToc())/1000f - 5.0f;
+      float xPos = page.getMediaBox().getWidth() - Constants.INDEX_FONT_SIZE * 1.5f;
+      final float yPos = page.getMediaBox().getHeight() - Constants.INDEX_TOP_OFFSET;
       final Matrix textDirection = Matrix.getRotateInstance(-Math.PI/2.0, xPos, yPos);
-      stream.setFont( INDEX_FONT, INDEX_FONT_SIZE );
+      stream.setFont( Constants.INDEX_FONT, Constants.INDEX_FONT_SIZE );
       stream.moveTo(xPos, yPos);
       stream.beginText();
       stream.setTextMatrix(textDirection);
-      stream.showText(inputFile.getToc());
+      stream.showText(String.format("%-3d         %s", pageNo, inputFile.getToc()));
       stream.endText();
       stream.close();
     } catch (IOException e) {
