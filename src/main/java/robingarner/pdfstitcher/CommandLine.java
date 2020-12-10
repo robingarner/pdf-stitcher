@@ -16,6 +16,16 @@ public class CommandLine {
   @Option(name="--verbose", aliases="-v", usage="Print progress information")
   private boolean verbose = false;
 
+  @Option(name="--spacers", aliases= {"--nospacers" },
+      usage="Print spacer pages",
+      handler=NegatableBooleanOptionHandler.class)
+  private boolean spacers = true;
+
+  @Option(name="--indextabs", aliases= {"--indextabs" },
+      usage="Print spacer pages",
+      handler=NegatableBooleanOptionHandler.class)
+  private boolean indextabs = true;
+
   public File getProjectFile() {
     return new File(projectFile);
   }
@@ -31,5 +41,11 @@ public class CommandLine {
     return verbose;
   }
 
+  public boolean printSpacers() {
+    return spacers;
+  }
 
+  public boolean printIndexTabs() {
+    return indextabs;
+  }
 }

@@ -67,14 +67,13 @@ public class TOCBuilder {
       for (String entry : tocEntries()) {
         contentStream.beginText();
         contentStream.newLineAtOffset(xPos, yPos);
-        float thisIndexWidth = font.getStringWidth( "88. " )/1000f * ENTRY_FONT_SIZE;
         contentStream.showText(String.format("%2d.", i));
         contentStream.endText();
         contentStream.beginText();
         contentStream.newLineAtOffset(xPos+indexWidth, yPos);
         contentStream.showText(String.format("%s", entry));
         contentStream.endText();
-       yPos -= ENTRY_FONT_SIZE * 1.3;
+        yPos -= ENTRY_FONT_SIZE * 1.3;
         i++;
       }
     }

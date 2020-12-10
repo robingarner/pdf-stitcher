@@ -9,7 +9,10 @@ import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.util.Matrix;
 
 /**
  * Container for the mutable state required to stitch together the
@@ -22,6 +25,9 @@ import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
  *   stitcher.close();
  */
 public class Stitcher implements Closeable {
+
+  private static final float INDEX_FONT_SIZE = 8.0f;
+  private static final PDType1Font INDEX_FONT = PDType1Font.TIMES_ROMAN;
 
   private final CommandLine cmdline;
 
@@ -60,7 +66,9 @@ public class Stitcher implements Closeable {
 
   void append(ProjectFile project, InputFile inputFile) throws IOException {
     if (inputFile.isSpacer()) {
+      if (cmdline.printSpacers()) {
       appendSpacer(project, inputFile);
+      }
     } else {
       appendPdf(project, inputFile);
     }
@@ -92,6 +100,9 @@ public class Stitcher implements Closeable {
     int docPage = 1;
     for (PDPage page : inDoc.getPages()) {
       if (inputFile.getRange().test(docPage)) {
+        if (cmdline.printIndexTabs() && PageAlign.isOdd(pageNo)) {
+          indexMark(inputFile, page);
+        }
         appendPage(page);
       }
       docPage++;
@@ -129,4 +140,27 @@ public class Stitcher implements Closeable {
     if (cmdline.isVerbose()) System.out.printf(format+"%n", args);
   }
 
+  /**
+   * Put the name of each score at the edge of each odd page
+   * @param inputFile
+   * @param page
+   */
+  private void indexMark(InputFile inputFile, PDPage page) {
+    try (PDPageContentStream stream = new PDPageContentStream(outDoc, page, PDPageContentStream.AppendMode.APPEND, true, true);) {
+      float xPos = page.getMediaBox().getWidth() - INDEX_FONT_SIZE;
+      final float yPos = page.getMediaBox().getHeight()
+          - INDEX_FONT.getStringWidth(inputFile.getToc())/1000f - 5.0f;
+      final Matrix textDirection = Matrix.getRotateInstance(-Math.PI/2.0, xPos, yPos);
+      stream.setFont( INDEX_FONT, INDEX_FONT_SIZE );
+      stream.moveTo(xPos, yPos);
+      stream.beginText();
+      stream.setTextMatrix(textDirection);
+      stream.showText(inputFile.getToc());
+      stream.endText();
+      stream.close();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 }
