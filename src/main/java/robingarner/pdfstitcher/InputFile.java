@@ -27,10 +27,17 @@ public class InputFile {
   @JsonProperty("toc")
   private String tocEntry = null;
 
+  @JsonProperty("composer")
+  private String composer = null;
+
+  @JsonProperty("title")
+  private String title = null;
+
   /** Is this a real file or just blank pages for including a spacer. */
   @JsonProperty("spacer")
   private boolean spacer = false;
 
+  /** The page number in the resulting document on which this file starts */
   private int firstPage;
 
   public InputFile() {
@@ -114,14 +121,41 @@ public class InputFile {
     this.firstPage = firstPage;
   }
 
+  public String getComposer() {
+    return composer;
+  }
+
+  public void setComposer(String composer) {
+    this.composer = composer;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+
+
+  @Override
+  public String toString() {
+    return "InputFile [file=" + file + ", align=" + align + "]";
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((align == null) ? 0 : align.hashCode());
+    result = prime * result + ((composer == null) ? 0 : composer.hashCode());
     result = prime * result + ((file == null) ? 0 : file.hashCode());
     result = prime * result + (include ? 1231 : 1237);
     result = prime * result + ((range == null) ? 0 : range.hashCode());
+    result = prime * result + (spacer ? 1231 : 1237);
+    result = prime * result + ((title == null) ? 0 : title.hashCode());
+    result = prime * result + ((tocEntry == null) ? 0 : tocEntry.hashCode());
     return result;
   }
 
@@ -136,6 +170,11 @@ public class InputFile {
     InputFile other = (InputFile) obj;
     if (align != other.align)
       return false;
+    if (composer == null) {
+      if (other.composer != null)
+        return false;
+    } else if (!composer.equals(other.composer))
+      return false;
     if (file == null) {
       if (other.file != null)
         return false;
@@ -148,6 +187,13 @@ public class InputFile {
         return false;
     } else if (!range.equals(other.range))
       return false;
+    if (spacer != other.spacer)
+      return false;
+    if (title == null) {
+      if (other.title != null)
+        return false;
+    } else if (!title.equals(other.title))
+      return false;
     if (tocEntry == null) {
       if (other.tocEntry != null)
         return false;
@@ -155,11 +201,5 @@ public class InputFile {
       return false;
     return true;
   }
-
-  @Override
-  public String toString() {
-    return "InputFile [file=" + file + ", align=" + align + "]";
-  }
-
 
 }
