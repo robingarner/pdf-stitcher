@@ -65,7 +65,7 @@ public class TOCBuilder {
       xPos += entryIndent;
       int i = 1;
       contentStream.setFont( TOC_FONT, ENTRY_FONT_SIZE );
-      for (InputFile input : project.getVisibleInputs()) {
+      for (InputFile input : tocEntries()) {
         String entry = input.getToc();
         contentStream.beginText();
         contentStream.newLineAtOffset(xPos, yPos);
@@ -86,8 +86,8 @@ public class TOCBuilder {
     return toc;
   }
 
-  private List<String> tocEntries() {
-    return project.getVisibleInputs().stream().map(InputFile::getToc).collect(toList());
+  private List<InputFile> tocEntries() {
+    return project.getVisibleInputs().stream().sorted(new TocEntryComparator()).collect(toList());
   }
 
 }

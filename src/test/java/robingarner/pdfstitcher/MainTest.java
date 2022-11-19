@@ -30,10 +30,11 @@ public class MainTest {
   public Object[][] tests() {
     return new Object[][] {
       new Object[] { "src/test/resources/test1/partfile.json" },
-      new Object[] { "src/test/resources/test3/partfile.json" },
-      new Object[] { "src/test/resources/test4/partfile.json" },
-      new Object[] { "src/test/resources/testTOC1/partfile.json" },
+      { "src/test/resources/test3/partfile.json" },
+      { "src/test/resources/test4/partfile.json" },
+      { "src/test/resources/testTOC1/partfile.json" },
       { "src/test/resources/testTOC2/partfile.json" },
+      { "src/test/resources/testTOC3/partfile.json" },
     };
   }
 

@@ -4,7 +4,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 public class Constants {
 
-  static final float INDEX_FONT_SIZE = 11.0f;
+  static final float INDEX_FONT_SIZE = 10.0f;
 
   static final float INDEX_TOP_OFFSET = 30.0f;
 

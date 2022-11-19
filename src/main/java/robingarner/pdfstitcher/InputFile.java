@@ -35,7 +35,7 @@ public class InputFile {
 
   /** Is this a real file or just blank pages for including a spacer. */
   @JsonProperty("spacer")
-  private boolean spacer = false;
+  private Boolean spacer;
 
   /** The page number in the resulting document on which this file starts */
   private int firstPage;
@@ -84,11 +84,15 @@ public class InputFile {
   }
 
   public boolean isSpacer() {
-    return spacer;
+    return spacer != null;
   }
 
   public boolean isNotSpacer() {
-    return !spacer;
+    return spacer == null;
+  }
+
+  public boolean isEnabled() {
+    return spacer;
   }
 
   public void setSpacer(boolean spacer) {

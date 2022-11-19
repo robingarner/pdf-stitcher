@@ -9,10 +9,11 @@ require 'net/http'
 require 'buildr/jdepend'
 require 'buildr/checkstyle'
 
-repositories.remote << "https://nexus.scu.edu.au/nexus/content/groups/public/"
-repositories.remote << "https://nexus.scu.edu.au/nexus/content/repositories/releases"
-repositories.remote << "https://nexus.scu.edu.au/nexus/content/repositories/snapshots"
+#repositories.remote << "https://nexus.scu.edu.au/nexus/content/groups/public/"
+#repositories.remote << "https://nexus.scu.edu.au/nexus/content/repositories/releases"
+#repositories.remote << "https://nexus.scu.edu.au/nexus/content/repositories/snapshots"
 
+repositories.remote << "https://repo1.maven.org/maven2/"
 
 httpclient_version = "4.5.1"
 httpcore_version = "4.4.4"
@@ -42,11 +43,6 @@ SLF4J_API = artifact("org.slf4j:slf4j-api:jar:1.7.2")
 SLF4J_LOG4J = artifact("org.slf4j:slf4j-log4j12:jar:1.7.2")
 LOG4J = artifact('log4j:log4j:jar:1.2.16')
 
-JCABI_MANIFESTS = artifact('com.jcabi:jcabi-manifests:jar:1.1')
-JCABI_LOG = artifact('com.jcabi:jcabi-log:jar:0.14')
-
-JCABI = [ JCABI_MANIFESTS, JCABI_LOG ]
-  
 jackson_version = '2.8.9'
 JACKSON_CORE = artifact("com.fasterxml.jackson.core:jackson-core:jar:#{jackson_version}")
 JACKSON_DATABIND = artifact("com.fasterxml.jackson.core:jackson-databind:jar:#{jackson_version}")
@@ -54,7 +50,7 @@ JACKSON_ANN = artifact("com.fasterxml.jackson.core:jackson-annotations:jar:#{jac
 
 JACKSON = [ JACKSON_CORE, JACKSON_DATABIND, JACKSON_ANN ]
 
-GUICE = transitive('com.google.inject:guice:jar:4.2.2')
+GUICE = transitive('com.google.inject:guice:jar:4.2.3')
 
 ONE_JAR = artifact('scu.one-jar:one-jar:jar:0.98-scu.2')
 

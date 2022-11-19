@@ -5,12 +5,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.util.Matrix;
 
 /**
@@ -37,6 +41,10 @@ public class Stitcher implements Closeable {
   private int pageNo = 1;
 
   private final PDDocument outDoc = new PDDocument();
+
+  private final Set<PDFont> allFonts = new HashSet<PDFont>();
+
+  private final Set<COSName> fontNames = new HashSet<COSName>();
 
   public Stitcher(CommandLine cmdline) {
     this.cmdline = cmdline;
@@ -66,8 +74,8 @@ public class Stitcher implements Closeable {
 
   void append(ProjectFile project, InputFile inputFile) throws IOException {
     if (inputFile.isSpacer()) {
-      if (cmdline.printSpacers()) {
-      appendSpacer(project, inputFile);
+      if (cmdline.printSpacers() && inputFile.isEnabled()) {
+        appendSpacer(project, inputFile);
       }
     } else {
       appendPdf(project, inputFile);
@@ -100,6 +108,14 @@ public class Stitcher implements Closeable {
 
     int docPage = 1;
     for (PDPage page : inDoc.getPages()) {
+      for (COSName fontName : page.getResources().getFontNames()) {
+        PDFont font = page.getResources().getFont(fontName);
+        if (!fontNames.contains(fontName)) {
+          fontNames.add(fontName);
+          boolean isEmbedded = font.isEmbedded();
+          System.out.printf("%s %s %s%n", font.getName(), file, isEmbedded ? "embedded" : "");
+        }
+      }
       if (inputFile.getRange().test(docPage)) {
         if (cmdline.printIndexTabs() && PageAlign.isOdd(pageNo)) {
           indexMark(inputFile, page);
